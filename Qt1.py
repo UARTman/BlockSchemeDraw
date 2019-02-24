@@ -5,15 +5,29 @@ from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QFrame
 
 
 class CodeFrame(QFrame):
-    def __init__(self, mycode='', **kw):
+    def __init__(self, inp='', **kw):
         super().__init__(**kw)
         self.setFrameStyle(2)
         self.TextLabel = QLabel(self)
-        self.TextLabel.setText(mycode)
+        self.TextLabel.setText(inp)
         self.TextLabel.setWordWrap(True)
         self.TextLabel.adjustSize()
         print(self.TextLabel.geometry())
         # self.setGeometry()
+        self.show()
+
+
+class BlockFrame(QFrame):
+    def __init__(self, inp=[], **kw):
+        super().__init__(**kw)
+        self.contentList = []
+        for i in inp[1]:
+            if type(i) == str:
+                cf = CodeFrame(inp=i, parent=self)
+                self.contentList.append(cf)
+            elif i[0] == 'block':
+                cf = BlockFrame(inp=i, parent=self)
+                self.contentList.append(cf)
         self.show()
 
 
@@ -58,8 +72,22 @@ if __name__ == '__main__':
     w = Widget()
     w.show()
     sys.exit(app.exec_())'''
-    ex1 = CodeFrame(mycode=mc, parent=ex2)
+    #ex1 = CodeFrame(inp=mc, parent=ex2)
     # ex1.resize(150, 150)
+    block = ['block', [
+        '123 dkfjskfhds sjfdkdj sdfjdsf',
+        ['block', [
+            '12',
+            ['block',
+             [
+                 '15'
+             ]
+             ]
+        ]
+         ],
+        'block'
+    ]]
+    bl = BlockFrame(inp=block, parent=ex2)
     ex2.show()
     print(2)
     sys.exit(app.exec_())
