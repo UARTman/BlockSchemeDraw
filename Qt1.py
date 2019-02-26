@@ -34,25 +34,16 @@ class BlockFrame(QFrame):
         self.typeLbl = QLabel()
         self.typeLbl.setText('block')
         self.currlayout.addWidget(self.typeLbl)
-
-        self.c = 2
-
         for i in inp[1]:
-
             if type(i) == str:
                 cf = CodeFrame(inp=i, parent=self)
-                cf.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Expanding)
-                self.contentList.append(cf)
-                self.currlayout.addWidget(cf)
-                self.currlayout.setAlignment(cf, Qt.AlignTop)
             elif i[0] == 'block':
                 cf = BlockFrame(inp=i, parent=self)
-                cf.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
-                self.contentList.append(cf)
-                self.currlayout.addWidget(cf)
-                self.currlayout.setAlignment(cf, Qt.AlignTop)
-                self.c += cf.c
-            self.c += 1
+            cf.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+            self.contentList.append(cf)
+            self.currlayout.addWidget(cf)
+            self.currlayout.setAlignment(cf, Qt.AlignTop)
+
         self.setGeometry(300, 300, 350, 300)
         self.setLayout(self.currlayout)
 
