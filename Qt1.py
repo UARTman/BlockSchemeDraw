@@ -18,7 +18,7 @@ class CodeFrame(QFrame):
         self.TextLabel.setText(inp)
 
         self.currLayout.addWidget(self.TextLabel)
-
+        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Maximum)
         self.setLayout(self.currLayout)
 
         self.show()
@@ -31,22 +31,47 @@ class BlockFrame(QFrame):
         self.contentList = []
         self.currlayout = QVBoxLayout()
 
-        self.typeLbl = QLabel()
-        self.typeLbl.setText('block')
-        self.currlayout.addWidget(self.typeLbl)
+        # self.typeLbl = QLabel()
+        # self.typeLbl.setText('block')
+        # self.currlayout.addWidget(self.typeLbl)
         for i in inp[1]:
             if type(i) == str:
                 cf = CodeFrame(inp=i, parent=self)
             elif i[0] == 'block':
                 cf = BlockFrame(inp=i, parent=self)
-            cf.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+            elif i[0] == 'if':
+                cf = IfFrame(inp=i, parent=self)
             self.contentList.append(cf)
             self.currlayout.addWidget(cf)
             self.currlayout.setAlignment(cf, Qt.AlignTop)
+        self.setGeometry(300, 300, 350, 300)
+        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+        self.setLayout(self.currlayout)
+        self.show()
 
+
+class IfFrame(QFrame):
+    def __init__(self, inp=[], **kw):
+        super().__init__(**kw)
+        self.setFrameStyle(2)
+        self.contentList = []
+        self.currlayout = QVBoxLayout()
+        self.typeLbl = QLabel()
+        self.typeLbl.setText('if')
+        self.currlayout.addWidget(self.typeLbl)
+        self.require = CodeFrame(inp[1][0])
+        self.currlayout.addWidget(self.require)
+        self.hb = QHBoxLayout()
+        self.thenlayout = QVBoxLayout()
+        self.thenlayout.addWidget(BlockFrame(['block', inp[2]]))
+        self.elselayout = QVBoxLayout()
+        self.elselayout.addWidget(BlockFrame(['block', inp[3]]))
+        self.hb.addLayout(self.thenlayout)
+        self.hb.addLayout(self.elselayout)
+        self.currlayout.addLayout(self.hb)
         self.setGeometry(300, 300, 350, 300)
         self.setLayout(self.currlayout)
-
+        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Maximum)
         self.show()
 
 
@@ -109,7 +134,9 @@ if __name__ == '__main__':
                        '1',
                        'Hello Again, guys!'
                    ]]
-                   ]]
+                   ]],
+        ['if', ['usl'], ['1adsd', '2s', ['if',['1'],[['block',['1']]],['2']]
+        ], ['3dsdasda', '4', '5']]
     ]]
     bl = BlockFrame(inp=block)
     # ex2.show()
