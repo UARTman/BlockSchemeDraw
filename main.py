@@ -7,6 +7,7 @@ from PyQt5.QtCore import Qt
 with open('in.txt', 'r') as f:
     InputStr = f.read()
 OutputArray = []
+#Test
 
 
 def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
