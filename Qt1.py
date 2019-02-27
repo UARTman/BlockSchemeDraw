@@ -1,9 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QFrame, QVBoxLayout, QHBoxLayout, \
-    QGridLayout, QSizePolicy
+from PyQt5.QtWidgets import QApplication, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QSizePolicy
 from PyQt5.QtCore import Qt
-
-
 
 # from PyQt5.QtGui import QPainter, QColor, QFont, QPen
 # from PyQt5.QtCore import Qt
@@ -25,7 +22,7 @@ class CodeFrame(QFrame):
 
 
 class BlockFrame(QFrame):
-    def __init__(self, inp=[], **kw):
+    def __init__(self, inp, **kw):
         super().__init__(**kw)
         self.setFrameStyle(2)
         self.contentList = []
@@ -57,7 +54,7 @@ class BlockFrame(QFrame):
 
 
 class IfFrame(QFrame):
-    def __init__(self, inp=[], **kw):
+    def __init__(self, inp, **kw):
         super().__init__(**kw)
         self.setFrameStyle(2)
         self.contentList = []
@@ -82,7 +79,7 @@ class IfFrame(QFrame):
 
 
 class WhileFrame(QFrame):
-    def __init__(self, inp=[], **kw):
+    def __init__(self, inp, **kw):
         super().__init__(**kw)
         self.setFrameStyle(2)
         self.contentList = []
@@ -101,7 +98,7 @@ class WhileFrame(QFrame):
 
 
 class RepeatFrame(QFrame):
-    def __init__(self, inp=[], **kw):
+    def __init__(self, inp, **kw):
         super().__init__(**kw)
         self.setFrameStyle(2)
         self.contentList = []
@@ -120,7 +117,6 @@ class RepeatFrame(QFrame):
         self.setLayout(self.currlayout)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Maximum)
         self.show()
-
 
 
 if __name__ == '__main__':
