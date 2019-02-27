@@ -8,7 +8,8 @@ with open('in.txt', 'r') as f:
     InputStr = f.read()
 OutputArray = []
 
-def FParseBE(start=0, end='end', out=OutputArray, inp=InputStr):
+
+def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
     i = start  # Index
     print(i, inp, len(inp))
 
@@ -21,24 +22,24 @@ def FParseBE(start=0, end='end', out=OutputArray, inp=InputStr):
 
         if inp[i:i + 5] == 'begin':
             out.append(['block', []])
-            k = FParseBE(start=i + 5, out=out[-1][1])
+            k = parse_be(start=i + 5, out=out[-1][1])
             i = k
             continue
         if inp[i:i + 2] == 'if':
             out.append(['if', [], [], []])
-            k = FParseIf(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
+            k = parse_if(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
             i = k
             continue
 
         if inp[i:i + 5] == 'while':
             out.append(['while', [], []])
-            k = FParseWhile(start=i + 5, out=out[-1][1], out1=out[-1][2])
+            k = parse_while(start=i + 5, out=out[-1][1], out1=out[-1][2])
             i = k
             continue
 
         if inp[i:i + 3] == 'for':
             out.append(['for', [], [], [], []])
-            k = FParseFor(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
+            k = parse_for(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
             i = k
             continue
 
@@ -49,14 +50,14 @@ def FParseBE(start=0, end='end', out=OutputArray, inp=InputStr):
                 out[-1] += inp[i]
             else:
                 out.append(inp[i])
-            k = FParseStr(start=i + 1, out=out)
+            k = parse_str(start=i + 1, out=out)
             i = k
             out[-1] += "'"
             continue
 
         if inp[i:i + 6] == 'repeat':
             out.append(['repeat', [], []])
-            k = FParseRU(start=i + 6, out=out[-1][1], out1=out[-1][2])
+            k = parse_repeat(start=i + 6, out=out[-1][1], out1=out[-1][2])
             i = k
             continue
 
@@ -75,7 +76,7 @@ def FParseBE(start=0, end='end', out=OutputArray, inp=InputStr):
 # In[129]:
 
 
-def FParseStr(start=0, end="'", out=OutputArray, inp=InputStr):
+def parse_str(start=0, end="'", out=OutputArray, inp=InputStr):
     i = start  # Index
 
     while True:
@@ -102,7 +103,7 @@ def FParseStr(start=0, end="'", out=OutputArray, inp=InputStr):
 # In[130]:
 
 
-def FParseIf(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[]):
+def parse_if(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[]):
     i = start  # Index
 
     while True:
@@ -114,31 +115,31 @@ def FParseIf(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[]):
 
         if inp[i:i + 5] == 'begin':
             out.append(['block', []])
-            k = FParseBE(start=i + 5, out=out[-1][1])
+            k = parse_be(start=i + 5, out=out[-1][1])
             i = k
             continue
 
         if inp[i:i + 2] == 'if':
             out.append(['if', [], [], []])
-            k = FParseIf(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
+            k = parse_if(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
             i = k - 1
             continue
 
         if inp[i:i + 5] == 'while':
             out.append(['while', [], []])
-            k = FParseWhile(start=i + 5, out=out[-1][1], out1=out[-1][2])
+            k = parse_while(start=i + 5, out=out[-1][1], out1=out[-1][2])
             i = k - 1
             continue
 
         if inp[i:i + 6] == 'repeat':
             out.append(['repeat', [], []])
-            k = FParseRU(start=i + 6, out=out[-1][1], out1=out[-1][2])
+            k = parse_repeat(start=i + 6, out=out[-1][1], out1=out[-1][2])
             i = k - 1
             continue
 
         if inp[i:i + 3] == 'for':
             out.append(['for', [], [], [], []])
-            k = FParseFor(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
+            k = parse_for(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
             i = k - 1
             continue
 
@@ -158,7 +159,7 @@ def FParseIf(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[]):
                 out[-1] += inp[i]
             else:
                 out.append(inp[i])
-            k = FParseStr(start=i + 1, out=out)
+            k = parse_str(start=i + 1, out=out)
             i = k
             out[-1] += "'"
             continue
@@ -181,7 +182,7 @@ def FParseIf(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[]):
 # In[131]:
 
 
-def FParseWhile(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
+def parse_while(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
     i = start  # Index
 
     while True:
@@ -193,31 +194,31 @@ def FParseWhile(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
 
         if inp[i:i + 5] == 'begin':
             out.append(['block', []])
-            k = FParseBE(start=i + 5, out=out[-1][1])
+            k = parse_be(start=i + 5, out=out[-1][1])
             i = k
             continue
 
         if inp[i:i + 2] == 'if':
             out.append(['if', [], [], []])
-            k = FParseIf(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
+            k = parse_if(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
             i = k - 1
             continue
 
         if inp[i:i + 5] == 'while':
             out.append(['while', [], []])
-            k = FParseWhile(start=i + 5, out=out[-1][1], out1=out[-1][2])
+            k = parse_while(start=i + 5, out=out[-1][1], out1=out[-1][2])
             i = k - 1
             continue
 
         if inp[i:i + 6] == 'repeat':
             out.append(['repeat', [], []])
-            k = FParseRU(start=i + 6, out=out[-1][1], out1=out[-1][2])
+            k = parse_repeat(start=i + 6, out=out[-1][1], out1=out[-1][2])
             i = k - 1
             continue
 
         if inp[i:i + 3] == 'for':
             out.append(['for', [], [], [], []])
-            k = FParseFor(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
+            k = parse_for(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
             i = k - 1
             continue
 
@@ -233,7 +234,7 @@ def FParseWhile(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
                 out[-1] += inp[i]
             else:
                 out.append(inp[i])
-            k = FParseStr(start=i + 1, out=out)
+            k = parse_str(start=i + 1, out=out)
             i = k
             out[-1] += "'"
             continue
@@ -256,7 +257,7 @@ def FParseWhile(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
 # In[132]:
 
 
-def FParseRU(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
+def parse_repeat(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
     i = start  # Index
     while True:
         if i >= len(inp):
@@ -267,31 +268,31 @@ def FParseRU(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
 
         if inp[i:i + 5] == 'begin':
             out.append(['block', []])
-            k = FParseBE(start=i + 5, out=out[-1][1])
+            k = parse_be(start=i + 5, out=out[-1][1])
             i = k
             continue
 
         if inp[i:i + 2] == 'if':
             out.append(['if', [], [], []])
-            k = FParseIf(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
+            k = parse_if(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
             i = k
             continue
 
         if inp[i:i + 5] == 'while':
             out.append(['while', [], []])
-            k = FParseWhile(start=i + 5, out=out[-1][1], out1=out[-1][2])
+            k = parse_while(start=i + 5, out=out[-1][1], out1=out[-1][2])
             i = k
             continue
 
         if inp[i:i + 6] == 'repeat':
             out.append(['repeat', [], []])
-            k = FParseRU(start=i + 6, out=out[-1][1], out1=out[-1][2])
+            k = parse_repeat(start=i + 6, out=out[-1][1], out1=out[-1][2])
             i = k
             continue
 
         if inp[i:i + 3] == 'for':
             out.append(['for', [], [], [], []])
-            k = FParseFor(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
+            k = parse_for(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
             i = k
             continue
 
@@ -307,7 +308,7 @@ def FParseRU(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
                 out[-1] += inp[i]
             else:
                 out.append(inp[i])
-            k = FParseStr(start=i + 1, out=out)
+            k = parse_str(start=i + 1, out=out)
             i = k
             out[-1] += "'"
             continue
@@ -330,7 +331,7 @@ def FParseRU(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
 # In[133]:
 
 
-def FParseFor(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[], typ=[]):
+def parse_for(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[], typ=[]):
     i = start  # Index
 
     while True:
@@ -342,31 +343,31 @@ def FParseFor(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[],
 
         if inp[i:i + 5] == 'begin':
             out.append(['block', []])
-            k = FParseBE(start=i + 5, out=out[-1][1])
+            k = parse_be(start=i + 5, out=out[-1][1])
             i = k
             continue
 
         if inp[i:i + 2] == 'if':
             out.append(['if', [], [], []])
-            k = FParseIf(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
+            k = parse_if(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
             i = k - 1
             continue
 
         if inp[i:i + 5] == 'while':
             out.append(['while', [], []])
-            k = FParseWhile(start=i + 5, out=out[-1][1], out1=out[-1][2])
+            k = parse_while(start=i + 5, out=out[-1][1], out1=out[-1][2])
             i = k - 1
             continue
 
         if inp[i:i + 6] == 'repeat':
             out.append(['repeat', [], []])
-            k = FParseRU(start=i + 6, out=out[-1][1], out1=out[-1][2])
+            k = parse_repeat(start=i + 6, out=out[-1][1], out1=out[-1][2])
             i = k - 1
             continue
 
         if inp[i:i + 3] == 'for':
             out.append(['for', [], [], [], []])
-            k = FParseFor(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
+            k = parse_for(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
             i = k - 1
             continue
 
@@ -394,7 +395,7 @@ def FParseFor(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[],
                 out[-1] += inp[i]
             else:
                 out.append(inp[i])
-            k = FParseStr(start=i + 1, out=out)
+            k = parse_str(start=i + 1, out=out)
             i = k
             out[-1] += "'"
             continue
@@ -433,10 +434,6 @@ class BlockFrame(QFrame):
         self.setFrameStyle(2)
         self.contentList = []
         self.currlayout = QVBoxLayout()
-
-        # self.typeLbl = QLabel()
-        # self.typeLbl.setText('block')
-        # self.currlayout.addWidget(self.typeLbl)
         for i in inp[1]:
             if type(i) == str:
                 cf = CodeFrame(inp=i, parent=self)
@@ -553,58 +550,9 @@ class ForFrame(QFrame):
 
 if __name__ == '__main__':
     try:
-        FParseBE(start=0,)
+        parse_be(start=0)
     except TypeError:
         pass
     app = QApplication(sys.argv)
-    # w = QWidget()
-    # ex2 = QFrame()
-    # ex2.setWindowTitle('BlockSchemeGen alpha 0.1')
-    mc = '''import sys
-from PyQt4 import QtGui, QtCore
-
-class Widget(QtGui.QWidget):
-    def __init__(self):
-        super(Widget, self).__init__()
-
-        self.initUI()
-
-    def initUI(self):
-        self.setWindowTitle('TEST')
-        self.resize(200, 100)
-
-        self.label = QtGui.QLabel(self)
-        self.label.move(20, 20)
-        self.label.setText('Hello')
-
-        # Какой атрибут установить, чтобы размер подгонялся под текст?
-        # self.label.setScaledContents(True)
-
-        button = QtGui.QPushButton('Click me', self)
-        button.move(20, 50)
-        self.connect(button, QtCore.SIGNAL('clicked()'),
-            self.function)
-
-    def function(self):
-        self.label.setText('Jack Sparrow!')
-        self.label.adjustSize() # без этого текст больший предыдущего будет обрезаться.
-
-if __name__ == '__main__':
-
-    app = QtGui.QApplication(sys.argv)
-    w = Widget()
-    w.show()
-    sys.exit(app.exec_())'''
-    # ex1 = CodeFrame(inp=mc, parent=ex2)
-    # ex1.resize(150, 150)
-    block = ['block', [
-        '1',
-        'Hello Again',
-        '134',
-        ['while', ['cond'], ['1', '2', '3']],
-        ['repeat', ['end'], ['1', '2', '3']],
-        ['for', [' i:=0 '], [' 10 '], [' jump'], [2]]
-    ]]
     bl = BlockFrame(inp=['block', OutputArray])
-    # ex2.show()
     sys.exit(app.exec_())
