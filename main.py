@@ -455,7 +455,7 @@ class BlockFrame(QFrame):
             self.contentList.append(cf)
             self.currlayout.addWidget(cf)
             self.currlayout.setAlignment(cf, Qt.AlignTop)
-        self.setGeometry(300, 300, 350, 300)
+        self.setGeometry(300, 300, 1, 1)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.setLayout(self.currlayout)
         self.show()
