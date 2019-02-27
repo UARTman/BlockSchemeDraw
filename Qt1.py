@@ -43,6 +43,8 @@ class BlockFrame(QFrame):
                 cf = IfFrame(inp=i, parent=self)
             elif i[0] == 'while':
                 cf = WhileFrame(inp=i, parent=self)
+            elif i[0] == 'repeat':
+                cf = RepeatFrame(inp=i, parent=self)
             else:
                 continue
             self.contentList.append(cf)
@@ -98,6 +100,26 @@ class WhileFrame(QFrame):
         self.show()
 
 
+class RepeatFrame(QFrame):
+    def __init__(self, inp=[], **kw):
+        super().__init__(**kw)
+        self.setFrameStyle(2)
+        self.contentList = []
+        self.currlayout = QVBoxLayout()
+        self.typeLbl = QLabel()
+        self.typeLbl.setText('repeat')
+        self.currlayout.addWidget(self.typeLbl)
+        self.doBlock = BlockFrame(['block', inp[2]])
+        self.currlayout.addWidget(self.doBlock)
+        self.untLbl = QLabel()
+        self.untLbl.setText('until')
+        self.currlayout.addWidget(self.untLbl)
+        self.condLabel = CodeFrame(inp[1][0])
+        self.currlayout.addWidget(self.condLabel)
+        self.setGeometry(300, 300, 350, 300)
+        self.setLayout(self.currlayout)
+        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Maximum)
+        self.show()
 
 
 
@@ -148,7 +170,8 @@ if __name__ == '__main__':
         '1',
         'Hello Again',
         '134',
-        ['while', ['cond'], ['1', '2', '3']]
+        ['while', ['cond'], ['1', '2', '3']],
+        ['repeat', ['end'], ['1', '2', '3']]
     ]]
     bl = BlockFrame(inp=block)
     # ex2.show()
