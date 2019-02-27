@@ -5,19 +5,43 @@ from PyQt5.QtCore import Qt
 # from PyQt5.QtCore import Qt
 
 with open('in.txt', 'r') as f:
-    InputStr = f.read()
+    InputStr = ' ' + f.read()
 OutputArray = []
 
+def consist_of(inp=' ', chars=[' ', '\n']):
+    for i in chars:
+        inp = inp.replace(i,'')
+    if inp != '':
+        return False
+    return True
+
+def clean(inp=[], garb=[' ', '\n']):
+    ret=[]
+    for i in inp:
+        if type(i) == str:
+            if not consist_of(i, garb):
+                ret.append(i)
+        elif type(i) == list:
+            k = []
+            for j in i:
+                if type(j) == list:
+                    k.append(clean(j, garb))
+                else:
+                    k.append(j)
+            ret.append(k)
+    return ret
 
 def is_keyword(inp=' ', kwrd=' ', allowed_start=[' ', '\n'], allowed_end=[' ', '\n', ';']):
+    print('~', kwrd, '~~', inp, len(inp), kwrd in inp)
     if kwrd == 'end':
         allowed_end.append('.')
     if kwrd not in inp:
         return False
     else:
         inp1 = inp.replace(kwrd, '')
+        print('\\',len(inp)-len(inp1))
 
-        print('`', inp1)
+        print('`', inp1, len(inp1))
         if len(inp1) == 0:
                 return True
         if len(inp1) == 1:
@@ -25,7 +49,9 @@ def is_keyword(inp=' ', kwrd=' ', allowed_start=[' ', '\n'], allowed_end=[' ', '
                 return True
         if len(inp1) == 2:
             if inp1[0] in allowed_start and inp1[-1] in allowed_end:
-                return True
+                if inp1[0] == inp[0] and inp1[-1] == inp[-1]:
+                    return True
+                    print('true')
     return False
 
 
@@ -36,12 +62,11 @@ def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
     while True:
         if i >= len(inp):
             return None
-        print(inp[i-1: i + len(end) + 1])
         if is_keyword(inp=inp[i-1: i + len(end) + 1], kwrd=end):  #
 
             return i + len(end)
-
-        if inp[i:i + 5] == 'begin':
+        if is_keyword(inp=inp[i-1:i+6], kwrd='begin'):
+        # if inp[i:i + 5] == 'begin':
             out.append(['block', []])
             k = parse_be(start=i + 5, out=out[-1][1])
             i = k
@@ -558,8 +583,9 @@ class ForFrame(QFrame):
         self.currlayout.addWidget(self.var)
         kk = ['', 'to', 'downto']
         self.typeLbl2 = QLabel()
-        self.typeLbl2.setText(kk[inp[-1][0]])
-        self.currlayout.addWidget(self.typeLbl2)
+        #print(inp[-1])
+        #self.typeLbl2.setText(kk[inp[4][0]])
+        #self.currlayout.addWidget(self.typeLbl2)
         self.toFrame = CodeFrame(inp[2][0])
         self.currlayout.addWidget(self.toFrame)
         self.doFrame = BlockFrame(['block', inp[3]])
@@ -574,6 +600,8 @@ if __name__ == '__main__':
         parse_be(start=0)
     except TypeError:
         pass
+    OutputArray = clean(OutputArray)
+    print(OutputArray)
     app = QApplication(sys.argv)
     bl = BlockFrame(inp=['block', OutputArray])
     sys.exit(app.exec_())
