@@ -9,6 +9,26 @@ with open('in.txt', 'r') as f:
 OutputArray = []
 
 
+def is_keyword(inp=' ', kwrd=' ', allowed_start=[' ', '\n'], allowed_end=[' ', '\n', ';']):
+    if kwrd == 'end':
+        allowed_end.append('.')
+    if kwrd not in inp:
+        return False
+    else:
+        inp1 = inp.replace(kwrd, '')
+
+        print('`', inp1)
+        if len(inp1) == 0:
+                return True
+        if len(inp1) == 1:
+            if inp1[0] in allowed_end or inp1[0] in allowed_start:
+                return True
+        if len(inp1) == 2:
+            if inp1[0] in allowed_start and inp1[-1] in allowed_end:
+                return True
+    return False
+
+
 def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
     i = start  # Index
     print(i, inp, len(inp))
@@ -16,8 +36,9 @@ def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
     while True:
         if i >= len(inp):
             return None
+        print(inp[i-1: i + len(end) + 1])
+        if is_keyword(inp=inp[i-1: i + len(end) + 1], kwrd=end):  #
 
-        if inp[i:i + len(end)] == end:  #
             return i + len(end)
 
         if inp[i:i + 5] == 'begin':
