@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 # from PyQt5.QtGui import QPainter, QColor, QFont, QPen
 # from PyQt5.QtCore import Qt
 
-with open('in.txt', 'r') as f:
+with open('in.txt', 'r', encoding='utf-8') as f:
     InputStr = ' ' + f.read()
 OutputArray = []
 
@@ -32,16 +32,13 @@ def clean(inp=[], garb=[' ', '\n']):
     return ret
 
 def is_keyword(inp=' ', kwrd=' ', allowed_start=[' ', '\n'], allowed_end=[' ', '\n', ';']):
-    print('~', kwrd, '~~', inp, len(inp), kwrd in inp)
+
     if kwrd == 'end':
         allowed_end.append('.')
     if kwrd not in inp:
         return False
     else:
         inp1 = inp.replace(kwrd, '')
-        print('\\',len(inp)-len(inp1))
-
-        print('`', inp1, len(inp1))
         if len(inp1) == 0:
                 return True
         if len(inp1) == 1:
@@ -51,13 +48,11 @@ def is_keyword(inp=' ', kwrd=' ', allowed_start=[' ', '\n'], allowed_end=[' ', '
             if inp1[0] in allowed_start and inp1[-1] in allowed_end:
                 if inp1[0] == inp[0] and inp1[-1] == inp[-1]:
                     return True
-                    print('true')
     return False
 
 
 def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
     i = start  # Index
-    print(i, inp, len(inp))
 
     while True:
         if i >= len(inp):
@@ -601,7 +596,6 @@ if __name__ == '__main__':
     except TypeError:
         pass
     OutputArray = clean(OutputArray)
-    print(OutputArray)
     app = QApplication(sys.argv)
     bl = BlockFrame(inp=['block', OutputArray])
     sys.exit(app.exec_())
