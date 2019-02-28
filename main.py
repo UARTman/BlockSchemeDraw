@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 # from PyQt5.QtGui import QPainter, QColor, QFont, QPen
 # from PyQt5.QtCore import Qt
 
-with open('in.txt', 'r', encoding='utf-8') as f:
+with open('in.pas', 'r', encoding='utf-8') as f:
     InputStr = ' ' + f.read()
 OutputArray = []
 
@@ -570,18 +570,18 @@ class ForFrame(QFrame):
         super().__init__(**kw)
         self.setFrameStyle(2)
         self.contentList = []
-        self.currlayout = QVBoxLayout()
+        self.currentLayout = QVBoxLayout()
         self.typeLbl = QLabel()
         self.typeLbl.setText('for')
-        self.currlayout.addWidget(self.typeLbl)
+        self.currentLayout.addWidget(self.typeLbl)
         self.var = CodeFrame(inp[1][0])
-        self.currlayout.addWidget(self.var)
+        self.currentLayout.addWidget(self.var)
         self.typeLbl2 = QLabel()
         self.toFrame = CodeFrame(inp[2][0])
-        self.currlayout.addWidget(self.toFrame)
+        self.currentLayout.addWidget(self.toFrame)
         self.doFrame = BlockFrame(['block', inp[3]])
-        self.currlayout.addWidget(self.doFrame)
-        self.setLayout(self.currlayout)
+        self.currentLayout.addWidget(self.doFrame)
+        self.setLayout(self.currentLayout)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Maximum)
         self.show()
 
