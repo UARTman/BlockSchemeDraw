@@ -8,15 +8,16 @@ with open('in.txt', 'r', encoding='utf-8') as f:
     InputStr = ' ' + f.read()
 OutputArray = []
 
+
 def consist_of(inp=' ', chars=[' ', '\n']):
     for i in chars:
-        inp = inp.replace(i,'')
+        inp = inp.replace(i, '')
     if inp != '':
         return False
     return True
 
 def clean(inp=[], garb=[' ', '\n']):
-    ret=[]
+    ret = []
     for i in inp:
         if type(i) == str:
             if not consist_of(i, garb):
@@ -61,7 +62,6 @@ def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
 
             return i + len(end)
         if is_keyword(inp=inp[i-1:i+6], kwrd='begin'):
-        # if inp[i:i + 5] == 'begin':
             out.append(['block', []])
             k = parse_be(start=i + 5, out=out[-1][1])
             i = k
@@ -576,11 +576,7 @@ class ForFrame(QFrame):
         self.currlayout.addWidget(self.typeLbl)
         self.var = CodeFrame(inp[1][0])
         self.currlayout.addWidget(self.var)
-        kk = ['', 'to', 'downto']
         self.typeLbl2 = QLabel()
-        #print(inp[-1])
-        #self.typeLbl2.setText(kk[inp[4][0]])
-        #self.currlayout.addWidget(self.typeLbl2)
         self.toFrame = CodeFrame(inp[2][0])
         self.currlayout.addWidget(self.toFrame)
         self.doFrame = BlockFrame(['block', inp[3]])
