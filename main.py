@@ -16,7 +16,7 @@ def consist_of(inp=' ', chars=[' ', '\n']):
         return False
     return True
 
-def clean(inp=[], garb=[' ', '\n']):
+def clean(inp=[], garb=[' ', '\n',';','.']):
     ret = []
     for i in inp:
         if type(i) == str:
@@ -47,7 +47,7 @@ def is_keyword(inp=' ', kwrd=' ', allowed_start=[' ', '\n'], allowed_end=[' ', '
                 return True
         if len(inp1) == 2:
             if inp1[0] in allowed_start and inp1[-1] in allowed_end:
-                if inp1[0] == inp[0] and inp1[-1] == inp[-1]:
+                if (inp1[0] == inp[0] and inp1[-1] == inp[-1]) or (inp1[0] == inp[-2] and inp1[-1] == inp[-1]):
                     return True
     return False
 
@@ -66,19 +66,19 @@ def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
             k = parse_be(start=i + 5, out=out[-1][1])
             i = k
             continue
-        if inp[i:i + 2] == 'if':
+        if is_keyword(inp=inp[i-1:i+3], kwrd='if'):
             out.append(['if', [], [], []])
             k = parse_if(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
             i = k
             continue
 
-        if inp[i:i + 5] == 'while':
+        if is_keyword(inp=inp[i-1:i+6], kwrd='while'):
             out.append(['while', [], []])
             k = parse_while(start=i + 5, out=out[-1][1], out1=out[-1][2])
             i = k
             continue
 
-        if inp[i:i + 3] == 'for':
+        if is_keyword(inp=inp[i-1:i+4], kwrd='for'):
             out.append(['for', [], [], [], []])
             k = parse_for(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
             i = k
@@ -96,7 +96,7 @@ def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
             out[-1] += "'"
             continue
 
-        if inp[i:i + 6] == 'repeat':
+        if is_keyword(inp=inp[i-1:i+7], kwrd='repeat'):
             out.append(['repeat', [], []])
             k = parse_repeat(start=i + 6, out=out[-1][1], out1=out[-1][2])
             i = k
@@ -151,44 +151,44 @@ def parse_if(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[]):
         if i >= len(inp):
             return None
 
-        if inp[i:i + len(end)] == end:  #
+        if is_keyword(inp=inp[i-1:i+len(end)+1], kwrd=end):  #
             return i + len(end)
 
-        if inp[i:i + 5] == 'begin':
+        if is_keyword(inp=inp[i-1:i + 6], kwrd='begin'):
             out.append(['block', []])
             k = parse_be(start=i + 5, out=out[-1][1])
             i = k
             continue
 
-        if inp[i:i + 2] == 'if':
+        if is_keyword(inp=inp[i-1:i+3], kwrd='if'):
             out.append(['if', [], [], []])
             k = parse_if(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
             i = k - 1
             continue
 
-        if inp[i:i + 5] == 'while':
+        if is_keyword(inp=inp[i-1:i+6], kwrd='while'):
             out.append(['while', [], []])
             k = parse_while(start=i + 5, out=out[-1][1], out1=out[-1][2])
             i = k - 1
             continue
 
-        if inp[i:i + 6] == 'repeat':
+        if is_keyword(inp=inp[i-1:i+7], kwrd='repeat'):
             out.append(['repeat', [], []])
             k = parse_repeat(start=i + 6, out=out[-1][1], out1=out[-1][2])
             i = k - 1
             continue
 
-        if inp[i:i + 3] == 'for':
+        if is_keyword(inp=inp[i-1:i+4], kwrd='for'):
             out.append(['for', [], [], [], []])
             k = parse_for(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
             i = k - 1
             continue
 
-        if inp[i:i + 4] == 'then':
+        if is_keyword(inp=inp[i-1:i+5], kwrd='then'):
             out = out1
             i = i + 4
             continue
-        if inp[i:i + 4] == 'else':
+        if is_keyword(inp=inp[i-1:i+5], kwrd='else'):
             out = out2
             i = i + 4
             continue
@@ -233,37 +233,37 @@ def parse_while(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
         if inp[i:i + len(end)] == end:  #
             return i + len(end)
 
-        if inp[i:i + 5] == 'begin':
+        if is_keyword(inp=inp[i-1:i + 6], kwrd='begin'):
             out.append(['block', []])
             k = parse_be(start=i + 5, out=out[-1][1])
             i = k
             continue
 
-        if inp[i:i + 2] == 'if':
+        if is_keyword(inp=inp[i-1:i+3], kwrd='if'):
             out.append(['if', [], [], []])
             k = parse_if(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
             i = k - 1
             continue
 
-        if inp[i:i + 5] == 'while':
+        if is_keyword(inp=inp[i-1:i+6], kwrd='while'):
             out.append(['while', [], []])
             k = parse_while(start=i + 5, out=out[-1][1], out1=out[-1][2])
             i = k - 1
             continue
 
-        if inp[i:i + 6] == 'repeat':
+        if is_keyword(inp=inp[i-1:i+7], kwrd='repeat'):
             out.append(['repeat', [], []])
             k = parse_repeat(start=i + 6, out=out[-1][1], out1=out[-1][2])
             i = k - 1
             continue
 
-        if inp[i:i + 3] == 'for':
+        if is_keyword(inp=inp[i-1:i+4], kwrd='for'):
             out.append(['for', [], [], [], []])
             k = parse_for(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
             i = k - 1
             continue
 
-        if inp[i:i + 2] == 'do':
+        if is_keyword(inp=inp[i-1:i+3], kwrd='do'):
             out = out1
             i = i + 2
             continue
@@ -307,37 +307,37 @@ def parse_repeat(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
         if inp[i:i + len(end)] == end:  #
             return i + len(end)
 
-        if inp[i:i + 5] == 'begin':
+        if is_keyword(inp=inp[i-1:i + 6], kwrd='begin'):
             out.append(['block', []])
             k = parse_be(start=i + 5, out=out[-1][1])
             i = k
             continue
 
-        if inp[i:i + 2] == 'if':
+        if is_keyword(inp=inp[i-1:i+3], kwrd='if'):
             out.append(['if', [], [], []])
             k = parse_if(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
             i = k
             continue
 
-        if inp[i:i + 5] == 'while':
+        if is_keyword(inp=inp[i-1:i+6], kwrd='while'):
             out.append(['while', [], []])
             k = parse_while(start=i + 5, out=out[-1][1], out1=out[-1][2])
             i = k
             continue
 
-        if inp[i:i + 6] == 'repeat':
+        if is_keyword(inp=inp[i-1:i+7], kwrd='repeat'):
             out.append(['repeat', [], []])
             k = parse_repeat(start=i + 6, out=out[-1][1], out1=out[-1][2])
             i = k
             continue
 
-        if inp[i:i + 3] == 'for':
+        if is_keyword(inp=inp[i-1:i+4], kwrd='for'):
             out.append(['for', [], [], [], []])
             k = parse_for(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
             i = k
             continue
 
-        if inp[i:i + 5] == 'until':
+        if is_keyword(inp=inp[i-1:i+6], kwrd='until'):
             out = out1
             i = i + 5
             continue
@@ -382,49 +382,49 @@ def parse_for(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[],
         if inp[i:i + len(end)] == end:  #
             return i + len(end)
 
-        if inp[i:i + 5] == 'begin':
+        if is_keyword(inp=inp[i-1:i + 6], kwrd='begin'):
             out.append(['block', []])
             k = parse_be(start=i + 5, out=out[-1][1])
             i = k
             continue
 
-        if inp[i:i + 2] == 'if':
+        if is_keyword(inp=inp[i-1:i+3], kwrd='if'):
             out.append(['if', [], [], []])
             k = parse_if(start=i + 2, out=out[-1][1], out1=out[-1][2], out2=out[-1][3])
             i = k - 1
             continue
 
-        if inp[i:i + 5] == 'while':
+        if is_keyword(inp=inp[i-1:i+6], kwrd='while'):
             out.append(['while', [], []])
             k = parse_while(start=i + 5, out=out[-1][1], out1=out[-1][2])
             i = k - 1
             continue
 
-        if inp[i:i + 6] == 'repeat':
+        if is_keyword(inp=inp[i-1:i+7], kwrd='repeat'):
             out.append(['repeat', [], []])
             k = parse_repeat(start=i + 6, out=out[-1][1], out1=out[-1][2])
             i = k - 1
             continue
 
-        if inp[i:i + 3] == 'for':
+        if is_keyword(inp=inp[i-1:i+4], kwrd='for'):
             out.append(['for', [], [], [], []])
             k = parse_for(start=i + 3, out=out[-1][1], out1=out[-1][2], out2=out[-1][3], typ=out[-1][4])
             i = k - 1
             continue
 
-        if inp[i:i + 2] == 'to':
+        if is_keyword(inp=inp[i-1:i+3], kwrd='to'):
             out = out1
             i = i + 2
             typ.append(1)
             continue
 
-        if inp[i:i + 6] == 'downto':
+        if is_keyword(inp=inp[i-1:i+7], kwrd='downto'):
             out = out1
             i = i + 6
             typ.append(2)
             continue
 
-        if inp[i:i + 2] == 'do':
+        if is_keyword(inp=inp[i-1:i+3], kwrd='do'):
             out = out2
             i = i + 2
             continue
