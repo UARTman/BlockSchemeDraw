@@ -16,7 +16,8 @@ def consist_of(inp=' ', chars=[' ', '\n']):
         return False
     return True
 
-def clean(inp=[], garb=[' ', '\n',';','.']):
+
+def clean(inp=[], garb=[' ', '\n', ';', '.']):
     ret = []
     for i in inp:
         if type(i) == str:
@@ -31,6 +32,7 @@ def clean(inp=[], garb=[' ', '\n',';','.']):
                     k.append(j)
             ret.append(k)
     return ret
+
 
 def is_keyword(inp=' ', kwrd=' ', allowed_start=[' ', '\n'], allowed_end=[' ', '\n', ';']):
 

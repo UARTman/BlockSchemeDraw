@@ -3,17 +3,13 @@ var
   s,p: real;
   x: real;
 begin
-  if a = 8 then
+  if i = 8 then
   begin
-  1;
-  2;
-  3;
+  writeLn(1);
   end
   else
   begin
-  4;
-  5;
-  6;
+  WriteLn(2);
   end;
   writeln('Введите 10 чисел: ');
   s := 0;
