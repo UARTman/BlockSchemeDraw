@@ -427,13 +427,16 @@ def parse_for(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[],
         if is_keyword(inp=inp[i-1:i+3], kwrd='to'):
             out = out1
             i = i + 2
-            typ.append(1)
             continue
 
         if is_keyword(inp=inp[i-1:i+7], kwrd='downto'):
             out = out1
             i = i + 6
-            typ.append(2)
+            continue
+
+        if is_keyword(inp=inp[i-1:i+5], kwrd='step'):
+            out = typ
+            i = i + 4
             continue
 
         if is_keyword(inp=inp[i-1:i+3], kwrd='do'):
@@ -598,6 +601,9 @@ class ForFrame(QFrame):
         # self.typeLbl2 = QLabel()
         self.toFrame = CodeFrame(inp[2][0])
         self.propertiesLayout.addWidget(self.toFrame)
+        if inp[4]:
+            self.turnFrame = CodeFrame(inp[4][0])
+            self.propertiesLayout.addWidget(self.turnFrame)
         self.currentLayout.addLayout(self.propertiesLayout)
         self.doFrame = inside(inp[3])
         self.currentLayout.addWidget(self.doFrame)

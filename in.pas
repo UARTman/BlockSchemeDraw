@@ -3,7 +3,7 @@ var
   s,p: real;
   x: real;
 begin
-  repeat writeln(4) until dawn;
+  if i = 5 then gp;
   if i = 8 then
   writeLn(1)
   else
