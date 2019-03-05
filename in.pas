@@ -4,9 +4,7 @@ var
   x: real;
 begin
   if i = 8 then
-  begin
-  writeLn(1);
-  end
+  writeLn(1)
   else
   begin
   WriteLn(2);
