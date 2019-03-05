@@ -9,7 +9,14 @@ with open('in.pas', 'r', encoding='utf-8') as f:
 OutputArray = []
 
 
-def consist_of(inp=' ', chars=[' ', '\n']):
+def consist_of(inp: str = ' ', chars: list = [' ', '\n']):
+    """Проверяет, состоит ли строка только из заданных символов. Возвращает Boolean.
+
+    Аргументы:
+    inp - входная строка
+    chars - список заданных символов
+
+    """
     for i in chars:
         inp = inp.replace(i, '')
     if inp != '':
