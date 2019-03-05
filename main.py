@@ -9,6 +9,16 @@ with open('in.pas', 'r', encoding='utf-8') as f:
 OutputArray = []
 
 
+def inside(inp, **kw):
+    if len(inp) == 1:
+        if type(inp[0]) == str:
+            return CodeFrame(inp[0], **kw)
+        elif type(inp[0]) == list:
+            if inp[0][0] == 'block':
+                return BlockFrame(inp[0], **kw)
+    return BlockFrame(['block', inp], **kw)
+
+
 def consist_of(inp=' ', chars=[' ', '\n']):
     for i in chars:
         inp = inp.replace(i, '')
@@ -514,9 +524,9 @@ class IfFrame(QFrame):
         self.currentLayout.addWidget(self.require)
         self.hb = QHBoxLayout()
         self.thenLayout = QVBoxLayout()
-        self.thenLayout.addWidget(BlockFrame(['block', inp[2]]))
+        self.thenLayout.addWidget(inside(inp[2]))
         self.elseLayout = QVBoxLayout()
-        self.elseLayout.addWidget(BlockFrame(['block', inp[3]]))
+        self.elseLayout.addWidget(inside(inp[3]))
         self.hb.addLayout(self.thenLayout)
         self.hb.addLayout(self.elseLayout)
         self.currentLayout.addLayout(self.hb)
@@ -537,7 +547,7 @@ class WhileFrame(QFrame):
         self.currentLayout.addWidget(self.typeLbl)
         self.condLabel = CodeFrame(inp[1][0])
         self.currentLayout.addWidget(self.condLabel)
-        self.doBlock = BlockFrame(['block', inp[2]])
+        self.doBlock = inside(inp[2])
         self.currentLayout.addWidget(self.doBlock)
         self.setGeometry(0, 0, 350, 300)
         self.setLayout(self.currentLayout)
@@ -554,7 +564,7 @@ class RepeatFrame(QFrame):
         self.typeLbl = QLabel()
         self.typeLbl.setText('repeat')
         self.currentLayout.addWidget(self.typeLbl)
-        self.doBlock = BlockFrame(['block', inp[2]])
+        self.doBlock = inside(inp[2])
         self.currentLayout.addWidget(self.doBlock)
         self.untLbl = QLabel()
         self.untLbl.setText('until')
@@ -581,7 +591,7 @@ class ForFrame(QFrame):
         self.typeLbl2 = QLabel()
         self.toFrame = CodeFrame(inp[2][0])
         self.currentLayout.addWidget(self.toFrame)
-        self.doFrame = BlockFrame(['block', inp[3]])
+        self.doFrame = inside(inp[3])
         self.currentLayout.addWidget(self.doFrame)
         self.setLayout(self.currentLayout)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Maximum)
