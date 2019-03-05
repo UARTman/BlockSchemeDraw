@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QSizePolicy
+from PyQt5.QtWidgets import QApplication, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QSizePolicy, QGridLayout, QWidget, QScrollArea
 from PyQt5.QtCore import Qt
 # from PyQt5.QtGui import QPainter, QColor, QFont, QPen
 # from PyQt5.QtCore import Qt
@@ -15,7 +15,7 @@ def inside(inp, **kw):
             return CodeFrame(inp[0], **kw)
         elif type(inp[0]) == list:
             if inp[0][0] == 'block':
-                return BlockFrame(inp[0], **kw)
+                return inside(inp[0][1], **kw)
     return BlockFrame(['block', inp], **kw)
 
 
@@ -525,22 +525,32 @@ class IfFrame(QFrame):
         self.currentLayout.addWidget(self.typeLbl)
         self.require = CodeFrame(inp[1][0])
         self.currentLayout.addWidget(self.require)
+        '''
         self.hl = QHBoxLayout()
-        self.thenLabel = QLabel()
-        self.thenLabel.setText('then')
-        self.hl.addWidget(self.thenLabel)
-        self.elseLabel = QLabel()
-        self.elseLabel.setText('else')
+        
+        
         self.hl.addWidget(self.elseLabel)
         self.currentLayout.addLayout(self.hl)
         self.hb = QHBoxLayout()
         self.thenLayout = QVBoxLayout()
-        self.thenLayout.addWidget(inside(inp[2]))
+        
         self.elseLayout = QVBoxLayout()
         self.elseLayout.addWidget(inside(inp[3]))
         self.hb.addLayout(self.thenLayout)
         self.hb.addLayout(self.elseLayout)
         self.currentLayout.addLayout(self.hb)
+        '''
+        self.grid = QGridLayout()
+        self.thenLabel = QLabel()
+        self.thenLabel.setText('then')
+        self.grid.addWidget(self.thenLabel, 0, 0, alignment=Qt.AlignTop)
+        self.grid.addWidget(inside(inp[2]), 1, 0, alignment=Qt.AlignTop)
+        if inp[3]:
+            self.elseLabel = QLabel()
+            self.elseLabel.setText('else')
+            self.grid.addWidget(self.elseLabel, 0, 1, alignment=Qt.AlignTop)
+            self.grid.addWidget(inside(inp[3]), 1, 1, alignment=Qt.AlignTop)
+        self.currentLayout.addLayout(self.grid)
         self.setGeometry(0, 0, 350, 300)
         self.setLayout(self.currentLayout)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Maximum)
