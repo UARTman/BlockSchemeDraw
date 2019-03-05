@@ -3,6 +3,7 @@ var
   s,p: real;
   x: real;
 begin
+  if i = 5 then gp;
   if i = 8 then
   writeLn(1)
   else
@@ -12,7 +13,7 @@ begin
   writeln('Введите 10 чисел: ');
   s := 0;
   p := 1;
-  for i := 1 downto 10 tuen 5 do
+  for i := 1 downto 10 step 5 do
   begin
     read(x);
     s := s + x;
