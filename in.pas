@@ -3,7 +3,7 @@ var
   s,p: real;
   x: real;
 begin
-  if i = 5 then gp;
+
   if i = 8 then
   writeLn(1)
   else

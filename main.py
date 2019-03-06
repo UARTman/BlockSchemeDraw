@@ -469,6 +469,15 @@ def parse_for(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[],
         i += 1
 
 
+class ScrollBlock(QScrollArea):
+    def __init__(self, inp=[], **kw):
+        super().__init__(**kw)
+        self.f = BlockFrame(inp)
+        self.setWidget(self.f)
+        self.setWidgetResizable(True)
+        self.setGeometry(0, 0, 350, 800)
+        self.show()
+
 class CodeFrame(QFrame):
     def __init__(self, inp='', **kw):
         super().__init__(**kw)
@@ -480,7 +489,6 @@ class CodeFrame(QFrame):
         self.currentLayout.addWidget(self.TextLabel)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Maximum)
         self.setLayout(self.currentLayout)
-
         self.show()
 
 
@@ -509,7 +517,7 @@ class BlockFrame(QFrame):
             self.currentLayout.addWidget(cf)
             self.currentLayout.setAlignment(cf, Qt.AlignTop)
         self.setGeometry(0, 0, 1, 1)
-        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
         self.setLayout(self.currentLayout)
         self.show()
 
@@ -553,7 +561,7 @@ class IfFrame(QFrame):
         self.currentLayout.addLayout(self.grid)
         self.setGeometry(0, 0, 350, 300)
         self.setLayout(self.currentLayout)
-        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Maximum)
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
         self.show()
 
 
@@ -572,7 +580,7 @@ class WhileFrame(QFrame):
         self.currentLayout.addWidget(self.doBlock)
         self.setGeometry(0, 0, 350, 300)
         self.setLayout(self.currentLayout)
-        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Maximum)
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
         self.show()
 
 
@@ -594,7 +602,7 @@ class RepeatFrame(QFrame):
         self.currentLayout.addWidget(self.condBlock)
         self.setGeometry(0, 0, 350, 300)
         self.setLayout(self.currentLayout)
-        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Maximum)
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
         self.show()
 
 
@@ -610,7 +618,7 @@ class ForFrame(QFrame):
         self.var = CodeFrame(inp[1][0])
         self.propertiesLayout = QHBoxLayout()
         self.propertiesLayout.addWidget(self.var)
-        # self.typeLbl2 = QLabel()
+        self.typeLbl2 = QLabel()
         self.toFrame = CodeFrame(inp[2][0])
         self.propertiesLayout.addWidget(self.toFrame)
         if inp[4]:
@@ -620,7 +628,7 @@ class ForFrame(QFrame):
         self.doFrame = inside(inp[3])
         self.currentLayout.addWidget(self.doFrame)
         self.setLayout(self.currentLayout)
-        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Maximum)
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
         self.show()
 
 
@@ -631,5 +639,5 @@ if __name__ == '__main__':
         pass
     OutputArray = clean(OutputArray)
     app = QApplication(sys.argv)
-    bl = BlockFrame(inp=['block', OutputArray])
+    bl = ScrollBlock(inp=['block', OutputArray])
     sys.exit(app.exec_())
