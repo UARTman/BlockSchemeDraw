@@ -64,6 +64,54 @@ def is_keyword(inp=' ', kwrd=' ', allowed_start=[' ', '\n'], allowed_end=[' ', '
     return False
 
 
+def parse_func(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
+    i = start  # Index
+    kk = 0
+    while True:
+        if i >= len(inp):
+            return None
+
+        if is_keyword(inp=inp[i-1:i+len(end)+1], kwrd=end) and not kk:  #
+            return i + len(end)
+
+        if inp[i] == '(':
+            kk += 1
+            out = out1
+            i = i + 1
+            continue
+
+        if inp[i] == ')':
+            kk -= 1
+            if not kk:
+                out=[]
+            i = i + 1
+            continue
+
+        if inp[i] == "'":
+            if len(out) == 0:
+                out.append('')
+            if type(out[-1]) == str:
+                out[-1] += inp[i]
+            else:
+                out.append(inp[i])
+            k = parse_str(start=i + 1, out=out)
+            i = k
+            out[-1] += "'"
+            continue
+
+        if i < len(inp):  # Добавляем символ в выводную структуру
+            if len(out) == 0:
+                out.append('')
+            if type(out[-1]) == str:
+                out[-1] += inp[i]
+            else:
+                out.append(inp[i])
+        else:
+            return None
+
+        i += 1
+
+
 def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
     i = start  # Index
 
@@ -96,6 +144,12 @@ def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
             i = k
             continue
 
+        if is_keyword(inp=inp[i-1:i+9], kwrd='function'):
+            out.append(['func', [], [], []])
+            k = parse_func(start=i + 8, out=out[-1][1], out1=out[-1][2])
+            i = k
+            continue
+
         if inp[i] == "'":
             if len(out) == 0:
                 out.append('')
@@ -124,11 +178,6 @@ def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
         i += 1
 
 
-# # Парсер Строк
-
-# In[129]:
-
-
 def parse_str(start=0, end="'", out=OutputArray, inp=InputStr):
     i = start  # Index
 
@@ -149,11 +198,6 @@ def parse_str(start=0, end="'", out=OutputArray, inp=InputStr):
             return None
 
         i += 1
-
-
-# # Парсер If
-
-# In[130]:
 
 
 def parse_if(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[]):
@@ -228,11 +272,6 @@ def parse_if(start=0, end=';', out=OutputArray, inp=InputStr, out1=[], out2=[]):
             return None
 
         i += 1
-
-
-# # Парсер While
-
-# In[131]:
 
 
 def parse_while(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
@@ -533,21 +572,6 @@ class IfFrame(QFrame):
         self.currentLayout.addWidget(self.typeLbl)
         self.require = CodeFrame(inp[1][0])
         self.currentLayout.addWidget(self.require)
-        '''
-        self.hl = QHBoxLayout()
-        
-        
-        self.hl.addWidget(self.elseLabel)
-        self.currentLayout.addLayout(self.hl)
-        self.hb = QHBoxLayout()
-        self.thenLayout = QVBoxLayout()
-        
-        self.elseLayout = QVBoxLayout()
-        self.elseLayout.addWidget(inside(inp[3]))
-        self.hb.addLayout(self.thenLayout)
-        self.hb.addLayout(self.elseLayout)
-        self.currentLayout.addLayout(self.hb)
-        '''
         self.grid = QGridLayout()
         self.thenLabel = QLabel()
         self.thenLabel.setText('then')
@@ -634,7 +658,7 @@ class ForFrame(QFrame):
 
 if __name__ == '__main__':
     try:
-        parse_be(start=0)
+        parse_be(start=0, out=OutputArray, inp=InputStr)
     except TypeError:
         pass
     OutputArray = clean(OutputArray)

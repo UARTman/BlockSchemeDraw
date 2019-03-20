@@ -1,7 +1,10 @@
-var 
+program 1
+var
   i: integer;
   s,p: real;
   x: real;
+
+
 begin
 
   if i = 8 then
