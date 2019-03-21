@@ -1,9 +1,19 @@
-var 
+begin
+procedure 4;
+var 179;
+begin
+123
+begin 18 end;
+end;
+
+var
   i: integer;
   s,p: real;
   x: real;
-begin
 
+
+begin
+  for a:=6 to 10 do for c:=9 to 19 do helloWorld;
   if i = 8 then
   writeLn(1)
   else
