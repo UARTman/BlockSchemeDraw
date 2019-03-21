@@ -1,5 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QSizePolicy, QGridLayout, QWidget, QScrollArea
+from PyQt5.QtWidgets import QApplication, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QSizePolicy, QGridLayout,\
+    QWidget, QScrollArea
 from PyQt5.QtCore import Qt
 # from PyQt5.QtGui import QPainter, QColor, QFont, QPen
 # from PyQt5.QtCore import Qt
@@ -11,12 +12,50 @@ OutputArray = []
 
 def inside(inp, **kw):
     if len(inp) == 1:
-        if type(inp[0]) == str:
-            return CodeFrame(inp[0], **kw)
-        elif type(inp[0]) == list:
-            if inp[0][0] == 'block':
-                return inside(inp[0][1], **kw)
+        return optimized_drawer(inp[0], **kw)
     return BlockFrame(['block', inp], **kw)
+
+
+def optimized_drawer(inp, **kw):
+    if type(inp) == str:
+        return CodeFrame(inp, **kw)
+    if type(inp) == list:
+        if inp[0] == 'block':
+            if len(inp[1]) == 1:
+                return optimized_drawer(inp[1][0], **kw)
+            else:
+                return BlockFrame(inp, **kw)
+        if inp[0] == 'if':
+            return IfFrame(inp, **kw)
+        if inp[0] == 'while':
+            return WhileFrame(inp, **kw)
+        if inp[0] == 'repeat':
+            return RepeatFrame(inp, **kw)
+        if inp[0] == 'for':
+            return ForFrame(inp, **kw)
+        if inp[0] == 'func':
+            print(inp)
+    return None
+
+
+def funcparse(arr):
+    for i in range(0, len(arr)):
+        if type(arr[i]) == list:
+            for j in arr[i]:
+                j = funcparse(j)
+            if arr[i][0] == 'func':
+                k = i+1
+                n = True
+                while n and k<len(arr):
+                    l = arr[k]
+                    arr[i][-1].append(l)
+                    if type(l) == str:
+                        arr[k] = ''
+                    elif type(l) == list:
+                        if l[0] == 'block':
+                            n = False
+                        arr[k][0] = 'del'
+    return arr
 
 
 def consist_of(inp=' ', chars=[' ', '\n']):
@@ -32,6 +71,14 @@ def clean(inp=[], garb=[' ', '\n', ';', '.']):
     for i in inp:
         if type(i) == str:
             if not consist_of(i, garb):
+                last = ''
+                while True:
+                    i = i.replace('  ', ' ')
+                    i = i.replace('\n\n', '\n')
+
+                    if i == last:
+                        break
+                    last = i
                 ret.append(i)
         elif type(i) == list:
             k = []
@@ -39,6 +86,13 @@ def clean(inp=[], garb=[' ', '\n', ';', '.']):
                 if type(j) == list:
                     k.append(clean(j, garb))
                 else:
+                    last = ''
+                    while True:
+                        j = j.replace('  ', ' ')
+                        j = j.replace('\n\n', '\n')
+                        if j == last:
+                            break
+                        last = j
                     k.append(j)
             ret.append(k)
     return ret
@@ -71,21 +125,21 @@ def parse_func(start=0, end=';', out=OutputArray, inp=InputStr, out1=[]):
         if i >= len(inp):
             return None
 
-        if is_keyword(inp=inp[i-1:i+len(end)+1], kwrd=end) and not kk:  #
+        if inp[i] == ';':  #
             return i + len(end)
 
         if inp[i] == '(':
-            kk += 1
             out = out1
-            i = i + 1
+            k = parse_str(start=i + 1, out=out, end=')')
+            i = k
             continue
 
-        if inp[i] == ')':
-            kk -= 1
-            if not kk:
-                out=[]
-            i = i + 1
-            continue
+        # if inp[i] == ')':
+        #     kk -= 1
+        #     if not kk:
+        #         out = []
+        #     i = i + 1
+        #     continue
 
         if inp[i] == "'":
             if len(out) == 0:
@@ -517,6 +571,7 @@ class ScrollBlock(QScrollArea):
         self.setGeometry(0, 0, 350, 800)
         self.show()
 
+
 class CodeFrame(QFrame):
     def __init__(self, inp='', **kw):
         super().__init__(**kw)
@@ -538,20 +593,7 @@ class BlockFrame(QFrame):
         self.contentList = []
         self.currentLayout = QVBoxLayout()
         for i in inp[1]:
-            if type(i) == str:
-                cf = CodeFrame(inp=i, parent=self)
-            elif i[0] == 'block':
-                cf = BlockFrame(inp=i, parent=self)
-            elif i[0] == 'if':
-                cf = IfFrame(inp=i, parent=self)
-            elif i[0] == 'while':
-                cf = WhileFrame(inp=i, parent=self)
-            elif i[0] == 'repeat':
-                cf = RepeatFrame(inp=i, parent=self)
-            elif i[0] == 'for':
-                cf = ForFrame(inp=i, parent=self)
-            else:
-                continue
+            cf = optimized_drawer(inp=i, parent=self)
             self.contentList.append(cf)
             self.currentLayout.addWidget(cf)
             self.currentLayout.setAlignment(cf, Qt.AlignTop)
@@ -661,6 +703,9 @@ if __name__ == '__main__':
         parse_be(start=0, out=OutputArray, inp=InputStr)
     except TypeError:
         pass
+
+    OutputArray = clean(OutputArray)
+    OutputArray = funcparse(OutputArray)
     OutputArray = clean(OutputArray)
     app = QApplication(sys.argv)
     bl = ScrollBlock(inp=['block', OutputArray])

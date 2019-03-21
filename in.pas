@@ -1,4 +1,9 @@
-program 1
+begin
+function 4(a,b,c);
+begin
+123
+end;
+
 var
   i: integer;
   s,p: real;
@@ -6,7 +11,7 @@ var
 
 
 begin
-
+  for a:=6 to 10 do for c:=9 to 19 do helloWorld;
   if i = 8 then
   writeLn(1)
   else
