@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QLabel, QFrame, QVBoxLayout, QHBoxLayout, QSizePolicy, QGridLayout,\
     QWidget, QScrollArea
 from PyQt5.QtCore import Qt
+import copy
 # from PyQt5.QtGui import QPainter, QColor, QFont, QPen
 # from PyQt5.QtCore import Qt
 
@@ -35,6 +36,7 @@ def optimized_drawer(inp, **kw):
             return ForFrame(inp, **kw)
         if inp[0] == 'func':
             print(inp)
+            return FuncFrame(inp, **kw)
     return None
 
 
@@ -48,7 +50,7 @@ def funcparse(arr):
                 n = True
                 while n and k<len(arr):
                     l = arr[k]
-                    arr[i][-1].append(l)
+                    arr[i][-1].append(copy.deepcopy(l))
                     if type(l) == str:
                         arr[k] = ''
                     elif type(l) == list:
@@ -594,9 +596,10 @@ class BlockFrame(QFrame):
         self.currentLayout = QVBoxLayout()
         for i in inp[1]:
             cf = optimized_drawer(inp=i, parent=self)
-            self.contentList.append(cf)
-            self.currentLayout.addWidget(cf)
-            self.currentLayout.setAlignment(cf, Qt.AlignTop)
+            if cf:
+                self.contentList.append(cf)
+                self.currentLayout.addWidget(cf)
+                self.currentLayout.setAlignment(cf, Qt.AlignTop)
         self.setGeometry(0, 0, 1, 1)
         self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
         self.setLayout(self.currentLayout)
@@ -690,6 +693,29 @@ class ForFrame(QFrame):
         if inp[4]:
             self.turnFrame = CodeFrame(inp[4][0])
             self.propertiesLayout.addWidget(self.turnFrame)
+        self.currentLayout.addLayout(self.propertiesLayout)
+        self.doFrame = inside(inp[3])
+        self.currentLayout.addWidget(self.doFrame)
+        self.setLayout(self.currentLayout)
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        self.show()
+
+
+class FuncFrame(QFrame):
+    def __init__(self, inp, **kw):
+        super().__init__(**kw)
+        self.setFrameStyle(2)
+        self.contentList = []
+        self.currentLayout = QVBoxLayout()
+        self.typeLbl = QLabel()
+        self.typeLbl.setText('function')
+        self.currentLayout.addWidget(self.typeLbl)
+        self.var = CodeFrame(inp[1][0])
+        self.propertiesLayout = QHBoxLayout()
+        self.propertiesLayout.addWidget(self.var)
+        self.typeLbl2 = QLabel()
+        self.toFrame = CodeFrame(inp[2][0])
+        self.propertiesLayout.addWidget(self.toFrame)
         self.currentLayout.addLayout(self.propertiesLayout)
         self.doFrame = inside(inp[3])
         self.currentLayout.addWidget(self.doFrame)
