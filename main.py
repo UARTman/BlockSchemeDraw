@@ -57,6 +57,8 @@ def funcparse(arr):
                         if l[0] == 'block':
                             n = False
                         arr[k][0] = 'del'
+                    k += 1
+
     return arr
 
 
@@ -203,6 +205,12 @@ def parse_be(start=0, end='end', out=OutputArray, inp=InputStr):
         if is_keyword(inp=inp[i-1:i+9], kwrd='function'):
             out.append(['func', [], [], []])
             k = parse_func(start=i + 8, out=out[-1][1], out1=out[-1][2])
+            i = k
+            continue
+
+        if is_keyword(inp=inp[i-1:i+10], kwrd='procedure'):
+            out.append(['func', [], [], []])
+            k = parse_func(start=i + 9, out=out[-1][1], out1=out[-1][2])
             i = k
             continue
 
@@ -714,8 +722,9 @@ class FuncFrame(QFrame):
         self.propertiesLayout = QHBoxLayout()
         self.propertiesLayout.addWidget(self.var)
         self.typeLbl2 = QLabel()
-        self.toFrame = CodeFrame(inp[2][0])
-        self.propertiesLayout.addWidget(self.toFrame)
+        if inp[2]:
+            self.toFrame = CodeFrame(inp[2][0])
+            self.propertiesLayout.addWidget(self.toFrame)
         self.currentLayout.addLayout(self.propertiesLayout)
         self.doFrame = inside(inp[3])
         self.currentLayout.addWidget(self.doFrame)

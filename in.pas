@@ -1,7 +1,9 @@
 begin
-function 4(a,b,c);
+procedure 4;
+var 179;
 begin
 123
+begin 18 end;
 end;
 
 var
