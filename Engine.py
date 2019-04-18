@@ -33,7 +33,6 @@ def optimized_drawer(inp, **kw):
         if inp[0] == 'for':
             return ForFrame(inp, **kw)
         if inp[0] == 'func':
-            print(inp)
             return FuncFrame(inp, **kw)
     return None
 
